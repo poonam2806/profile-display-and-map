@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Profiles</title>
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+  <script src="https://unpkg.com/angular-material@latest/bundles/material.min.js"></script>
+</head>
+<body>
+  <div ng-app="profilesApp">
+    <div ng-controller="ProfilesController">
+      <h1>Profiles</h1>
+
+      <div class="profile-list">
+        <ul>
+          <li ng-repeat="profile in profiles">
+            <img src="{{profile.imageURL}}" />
+            <h2>{{profile.name}}</h2>
+            <p>{{profile.description}}</p>
+            <button ng-click="showSummary(profile)">Summary</button>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Display the map only if selectedProfile is not null -->
+      <div class="map" ng-show="selectedProfile" style="height: 400px">
+        <!-- Embed your map here -->
+        <div id="map"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    angular.module('profilesApp', [])
+      .controller('ProfilesController', function($scope) {
+        $scope.profiles = [
+          {
+            name: 'Poonam Singh',
+            imageURL: 'https://picsum.photos/200/200',
+            description: 'Poonam Singh is a software engineer at Google. He lives in Mountain View, California.',
+            latitude: 37.4236,
+            longitude: -122.0842
+          },
+          {
+            name: 'Priya Kulkarni',
+            imageURL: 'https://picsum.photos/200/200',
+            description: 'Priya Kulkarni is a doctor at Stanford University. She lives in Palo Alto, California.',
+            latitude: 37.4419,
+            longitude: -122.1430
+          }
+        ];
+
+        $scope.selectedProfile = null;
+
+        $scope.showSummary = function(profile) {
+          $scope.selectedProfile = profile;
+
+          // When Summary button is clicked, create or update the map
+          if (profile) {
+            initializeMap(profile);
+          }
+        };
+
+        function initializeMap(profile) {
+          // Initialize and display the map with the selected profile's location
+          var map = new google.maps.Map(document.getElementById('map'), {
+            center: { lat: profile.latitude, lng: profile.longitude },
+            zoom: 12
+          });
+
+          // Add a marker to the map
+          var marker = new google.maps.Marker({
+            position: { lat: profile.latitude, lng: profile.longitude },
+            map: map,
+            title: profile.name
+          });
+        }
+      });
+  </script>
+</body>
+</html>
